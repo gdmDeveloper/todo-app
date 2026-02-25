@@ -27,8 +27,10 @@ const taskSchema = new Schema(
       ref: 'User',
     },
     group: {
+      // Users in same group can create and see group tasks.
       type: Schema.Types.ObjectId,
       ref: 'Group',
+      default: 'null',
     },
   },
   { timestamps: true },

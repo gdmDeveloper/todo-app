@@ -4,6 +4,7 @@ import 'dotenv/config';
 
 import authRouter from './routes/auth.js';
 import taskRouter from './routes/task.js';
+import groupRouter from './routes/group.js';
 
 const app = express();
 const host = process.env.HOST;
@@ -11,7 +12,8 @@ const host = process.env.HOST;
 app.use(express.json());
 
 app.use('/auth/', authRouter);
-app.use('/task', taskRouter);
+app.use('/tasks', taskRouter);
+app.use('/group', groupRouter);
 
 // ! START MONGOOSE
 
