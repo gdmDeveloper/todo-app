@@ -1,9 +1,10 @@
-import Group from '../models/Group';
+import Group from '../models/Group.js';
 
-export const isGroupMember = async (req, res) => {
-  const { groupId } = req.body;
+export const isGroupMember = async (req, res, next) => {
+  const { groupId } = req.params;
 
   const group = await Group.findById(groupId);
+  console.log(group);
   if (!group) return res.status(404).json({ error: 'Group not found' });
 
   const member = group.members.some((m) => m.user._id.equals(req.user.id));
