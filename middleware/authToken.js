@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const autenticar = (req, res, next) => {
+const validateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     res.status(401).json({ error: 'Token is required' });
@@ -14,4 +14,4 @@ const autenticar = (req, res, next) => {
     res.status(401).json({ error: 'Token invalid or expired' });
   }
 };
-export default autenticar;
+export default validateToken;

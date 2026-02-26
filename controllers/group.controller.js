@@ -60,7 +60,7 @@ const joinGroup = async (req, res) => {
     {
       $push: { members: { user: req.user.id, rol: 'member' } }, // $push from MongoDB to update an array without replacing the entire array
     },
-    { new: true }, // returns new group
+    { returnDocument: 'after' }, // returns new group
   );
 
   if (!group) res.status(400).json({ error: 'Group not found' });
@@ -76,4 +76,6 @@ const getUserGroups = async (req, res) => {
   res.status(200).json({ total: groups.length, groups });
 };
 
-export { createGroup, searchGroup, joinGroup, getUserGroups };
+const editGroup = async (req, res) => {};
+
+export { createGroup, searchGroup, joinGroup, getUserGroups, editGroup };

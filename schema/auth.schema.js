@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { optional, z } from 'zod';
 
 const registerSchema = z.object({
   name: z.string().min(2).max(50),
@@ -11,4 +11,10 @@ const loginSchema = z.object({
   password: z.string().min(2).max(100),
 });
 
-export { registerSchema, loginSchema };
+const updateProfileSchema = z.object({
+  name: z.string().min(2).max(50).optional(),
+  email: z.email().optional(),
+  password: z.string().min(2).max(100).optional(),
+});
+
+export { registerSchema, loginSchema, updateProfileSchema };

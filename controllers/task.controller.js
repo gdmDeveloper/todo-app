@@ -1,8 +1,7 @@
 import Task from '../models/Task.js';
 
 /**
- * Get tasks from the API
- * User can write down in the query the following params for the task search
+ * * GET TASKS. USER CAN PROVIDE COMPLETED OR PRIORITY ARGUMENT IN REQUEST QUERY.
  * @param completed
  * @param priority
  * @param {*} req
@@ -22,15 +21,13 @@ const getTasks = async (req, res) => {
 };
 
 const getTaskById = async (req, res) => {
-  console.log('entra');
   const id = req.params.id;
-  console.log(id);
   const task = await Task.findById(id);
   res.status(201).json(task);
 };
 
 /**
- * Creates new task
+ * * CREATES NEW TASK
  * @param {*} req
  * @param {*} res
  */
@@ -43,4 +40,25 @@ const createTask = async (req, res) => {
   res.status(201).json(task);
 };
 
-export { getTasks, createTask, getTaskById };
+const editTask = async (req, res) => {
+  const { id } = req.params;
+
+  const task = await Task.findOneAndUpdate(
+    { _id: id, user: req.user.id },
+    { ...req.body },
+    { returnDocument: 'after' },
+  );
+  if (!task) return res.status(404).json({ error: 'Task not found' });
+
+  res.status(200).json({ message: 'Task updated', task });
+};
+
+const deleteTask = async (req, res) => {
+  const { id } = req.params;
+  const task = await Task.findOneAndDelete({ _id: id, user: req.user.id });
+  if (!task) return res.status(404).json({ error: 'Task not found' });
+
+  res.status(200).json({ message: 'Task deleted' });
+};
+
+export { getTasks, createTask, getTaskById, editTask, deleteTask };

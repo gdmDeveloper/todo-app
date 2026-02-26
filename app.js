@@ -5,6 +5,10 @@ import 'dotenv/config';
 import authRouter from './routes/auth.js';
 import taskRouter from './routes/task.js';
 import groupRouter from './routes/group.js';
+import profileRouter from './routes/profile.js';
+import groupTasksRouter from './routes/groupTask.js';
+
+import validateToken from './middleware/authToken.js';
 
 const app = express();
 const host = process.env.HOST;
@@ -12,8 +16,13 @@ const host = process.env.HOST;
 app.use(express.json());
 
 app.use('/auth/', authRouter);
+
+app.use(validateToken);
+
 app.use('/tasks', taskRouter);
+app.use('/profile', profileRouter);
 app.use('/group', groupRouter);
+app.use('/group', groupTasksRouter);
 
 // ! START MONGOOSE
 

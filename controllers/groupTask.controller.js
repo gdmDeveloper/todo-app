@@ -11,7 +11,6 @@ const createGroupTask = async (req, res) => {
 };
 
 const getGroupTasks = async (req, res) => {
-  console.log(req.params.groupId);
   const tasks = await Task.find({
     group: req.group._id,
   });
@@ -19,4 +18,25 @@ const getGroupTasks = async (req, res) => {
   res.json({ total: tasks.length, tasks });
 };
 
-export { createGroupTask, getGroupTasks };
+const getGroupTaskById = async (req, res) => {
+  const task = await Task.findById(req.params.id);
+  if (!task) return res.status(404).json({ error: 'Task not found' });
+
+  res.status(200).json(task);
+};
+
+const editGroupTask = async (req, res) => {
+  const task = await Task.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
+  if (!task) return res.status(404).json({ error: 'Task not found' });
+
+  res.status(200).json({ message: 'Task updated', task });
+};
+
+const deleteGroupTask = async (req, res) => {
+  const task = await Task.findByIdAndDelete(req.params.id);
+  if (!task) return res.status(404).json({ error: 'Task not found' });
+
+  res.status(200).json({ message: 'Task deleted' });
+};
+
+export { createGroupTask, getGroupTasks, getGroupTaskById, editGroupTask, deleteGroupTask };
