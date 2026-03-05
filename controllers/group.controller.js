@@ -1,6 +1,14 @@
 import Group from '../models/Group.js';
 import { generateCode } from '../utils/generateGroupCode.js';
 
+// *********** GET USER GROUPS **********
+const getUserGroups = async (req, res) => {
+  const groups = await Group.find({ 'members.user': req.user.id }).select('+invitationCode');
+  if (!groups) return res.status(404).json({ message: 'You do not have any group yet' });
+
+  res.status(200).json({ total: groups.length, groups });
+};
+
 // ****** CREATE GROUP *********
 const createGroup = async (req, res) => {
   const { name, description = '' } = req.body;
@@ -38,8 +46,7 @@ const searchGroup = async (req, res) => {
   if (!group) return res.status(404).json({ error: 'Group not found.' });
 
   // Checks if user already a member
-  const alreadyMember = group.members.some((u) => u.user.equals(req.user.id));
-  if (alreadyMember) return res.status(200).json({ message: 'Already a member', group });
+  const isMember = group.members.some((u) => u.user.equals(req.user.id));
 
   // Return group information
 
@@ -48,7 +55,17 @@ const searchGroup = async (req, res) => {
     name: group.name,
     description: group.description,
     totalMembers: group.members.length,
+    isMember,
   });
+};
+
+const getGroupById = async (req, res) => {
+  const { id } = req.params;
+
+  const group = await Group.findById(id);
+  if (!group) res.status(404).json({ error: 'Group not found' });
+
+  res.status(200).json(group);
 };
 
 // ********* JOIN GROUP *********
@@ -68,14 +85,19 @@ const joinGroup = async (req, res) => {
   res.status(200).json('You have joined the group', group);
 };
 
-// *********** GET USER GROUPS **********
-const getUserGroups = async (req, res) => {
-  const groups = await Group.find({ 'members.user': req.user.id }).select('+invitationCode');
-  if (!groups) return res.status(404).json({ message: 'You do not have any group yet' });
+const editGroup = async (req, res) => {
+  const { id } = req.params;
+  const group = await Group.findById(id);
+  if (!group) res.status(404).json({ error: 'Group not found' });
 
-  res.status(200).json({ total: groups.length, groups });
+  const isMember = group.members.some((u) => u.user.equals(req.user.id));
+  if (!isMember) return res.status(400).json({ error: 'Permission' });
+
+  const groupUpdated = await Group.findByIdAndUpdate(req.params.id, req.body, {
+    returnDocument: 'after',
+  });
+
+  res.status(200).json({ message: 'Group updated', group: groupUpdated });
 };
 
-const editGroup = async (req, res) => {};
-
-export { createGroup, searchGroup, joinGroup, getUserGroups, editGroup };
+export { createGroup, searchGroup, getGroupById, joinGroup, getUserGroups, editGroup };

@@ -3,17 +3,17 @@ import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 
 const register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, inviteCode } = req.body;
 
-  // Checks email is not already used.
+  // Verifica código de invitación
+  if (inviteCode !== process.env.INVITE_CODE) {
+    return res.status(403).json({ error: 'Código de invitación inválido' });
+  }
+
   const emailExists = await User.findOne({ email });
   if (emailExists) return res.status(400).json({ error: 'Email already exists' });
 
-  // Password hash
-
-  const hash = await bcrypt.hash(password, 10);
-
-  // Create user
+  const hash = await bcrypt.hash(password, 12); // 👈 sube a 12 rondas
 
   const newUser = await User.create({ name, email, password: hash });
   res.status(201).json({ message: 'User created', newUser });

@@ -18,8 +18,8 @@ router.get('/:id', validateIdMiddleware, getTaskById);
 
 router.post('/', schemaValidatorMiddleware(taskSchema), createTask);
 
-router.put('/:id', schemaValidatorMiddleware(editTaskSchema), editTask);
+router.patch('/:id', validateIdMiddleware, schemaValidatorMiddleware(editTaskSchema), editTask);
 
-router.delete('/:id', deleteTask);
+router.delete('/:id', validateIdMiddleware, deleteTask);
 
 export default router;

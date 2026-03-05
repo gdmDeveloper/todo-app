@@ -9,11 +9,17 @@ import profileRouter from './routes/profile.js';
 import groupTasksRouter from './routes/groupTask.js';
 
 import validateToken from './middleware/authToken.js';
+import cors from 'cors';
 
 const app = express();
 const host = process.env.HOST;
 
 app.use(express.json());
+app.use(
+  cors({
+    origin: '*', // en desarrollo permite todo
+  }),
+);
 
 app.use('/auth/', authRouter);
 
@@ -21,8 +27,8 @@ app.use(validateToken);
 
 app.use('/tasks', taskRouter);
 app.use('/profile', profileRouter);
-app.use('/group', groupRouter);
-app.use('/group', groupTasksRouter);
+app.use('/groups', groupRouter);
+app.use('/groups', groupTasksRouter);
 
 // ! START MONGOOSE
 

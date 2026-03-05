@@ -9,15 +9,20 @@ import Task from '../models/Task.js';
  */
 
 const getTasks = async (req, res) => {
-  const { completed, priority } = req.query;
+  const { completed, priority, search } = req.query;
   const filter = { user: req.user.id }; // from payload
 
   if (completed !== undefined) filter.completed = completed === 'true';
 
   if (priority) filter.priority = priority;
 
-  const task = await Task.find(filter).populate('user', 'name -_id').sort({ createdAt: -1 });
-  res.json({ total: task.length, task });
+  if (search) filter.title = { $regex: search, $options: 'i' };
+
+  const tasks = await Task.find({
+    user: req.user.id,
+    $or: [{ group: { $exists: false } }, { group: null }],
+  });
+  res.json({ total: tasks.length, tasks });
 };
 
 const getTaskById = async (req, res) => {
@@ -42,6 +47,7 @@ const createTask = async (req, res) => {
 
 const editTask = async (req, res) => {
   const { id } = req.params;
+  console.log(req.body.coverImage);
 
   const task = await Task.findOneAndUpdate(
     { _id: id, user: req.user.id },

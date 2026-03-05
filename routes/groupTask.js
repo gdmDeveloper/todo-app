@@ -22,7 +22,7 @@ router.post(
   createGroupTask,
 );
 
-router.put(
+router.patch(
   '/:groupId/tasks/:id',
   isGroupMember,
   schemaValidatorMiddleware(editTaskSchema),

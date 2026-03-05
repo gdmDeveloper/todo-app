@@ -26,10 +26,10 @@ const getGroupTaskById = async (req, res) => {
 };
 
 const editGroupTask = async (req, res) => {
-  const task = await Task.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
-  if (!task) return res.status(404).json({ error: 'Task not found' });
+  const tasks = await Task.findByIdAndUpdate(req.params.id, req.body, { returnDocument: 'after' });
+  if (!tasks) return res.status(404).json({ error: 'Task not found' });
 
-  res.status(200).json({ message: 'Task updated', task });
+  res.status(200).json({ message: 'Task updated', tasks });
 };
 
 const deleteGroupTask = async (req, res) => {

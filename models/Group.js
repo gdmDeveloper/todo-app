@@ -13,6 +13,10 @@ const groupSchema = new Schema(
       type: String,
       default: '',
     },
+    coverImage: {
+      type: String,
+      default: null,
+    },
     invitationCode: {
       type: String,
       unique: true,

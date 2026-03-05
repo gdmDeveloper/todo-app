@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { required } from 'zod/mini';
 
 const taskSchema = new Schema(
   {
@@ -7,6 +8,14 @@ const taskSchema = new Schema(
       required: [true, 'Title is required'],
       trim: true,
       minlength: 3,
+    },
+    icon: {
+      type: String,
+      default: 'document-text-outline',
+    },
+    coverImage: {
+      type: String,
+      default: null,
     },
     description: {
       type: String,
@@ -30,7 +39,6 @@ const taskSchema = new Schema(
       // Users in same group can create and see group tasks.
       type: Schema.Types.ObjectId,
       ref: 'Group',
-      default: 'null',
     },
   },
   { timestamps: true },
